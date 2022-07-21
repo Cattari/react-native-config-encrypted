@@ -1,18 +1,13 @@
 import Crypto from 'crypto-js';
+import encryptConfig from '../../../env-encrypt.json'
+
+const { seed, encryptedVars } = encryptConfig
 
 class SecureConfig {
-  static key;
+  static key = seed
 
-  static configure ({ key, provider }) {
-    SecureConfig.key = key;
+  static configure ({ provider }) {
     SecureConfig.configProvider = provider;
-  }
-
-  static encrypt (msg = '') {
-    if(!SecureConfig.key){
-      throw new Error(`Trying to encrypt without a configuration ~ ${msg}`);
-    }
-    return Crypto.AES.encrypt(String(msg), SecureConfig.key).toString();
   }
 
   static decrypt (value) {
@@ -28,7 +23,8 @@ class SecureConfig {
     return decryptedString;
   }
 
-  static get (key, decrypt = true) {
+  static get (key) {
+    const decrypt = encryptedVars.includes(key)
     return decrypt ? SecureConfig.decrypt(SecureConfig.configProvider[key]) : SecureConfig.configProvider[key];
   }
 } 
