@@ -1,5 +1,5 @@
 import Crypto from 'crypto-js';
-import encryptConfig from '../../../env-encrypt.json'
+import encryptConfig from '../../../env-encrypt.json';
 
 const { seed, encryptedVars } = encryptConfig
 
@@ -14,7 +14,7 @@ class SecureConfig {
     if (!value) {
       return;
     }
-    let decryptedString ;
+    let decryptedString;
     try {
       decryptedString = Crypto.AES.decrypt(String(value), SecureConfig.key).toString(Crypto.enc.Utf8);
     } catch (error) {
