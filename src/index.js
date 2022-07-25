@@ -1,13 +1,16 @@
+// import { ReactNative } from 'react-native'
 import Crypto from 'crypto-js';
-import encryptConfig from '../../../env-encrypt.json';
+// import encryptConfig from '../../../env-encrypt.json';
 
-const { seed, encryptedVars } = encryptConfig
+// const { ReactNativeConfigModule } = ReactNative.NativeModules;
+// const { encryptedVars } = encryptConfig
 
 class SecureConfig {
-  static key = seed
+  static seed = seed;
 
-  static configure ({ provider }) {
+  static configure ({ provider, seed }) {
     SecureConfig.configProvider = provider;
+    SecureConfig.seed = seed;
   }
 
   static decrypt (value) {
@@ -16,15 +19,14 @@ class SecureConfig {
     }
     let decryptedString;
     try {
-      decryptedString = Crypto.AES.decrypt(String(value), SecureConfig.key).toString(Crypto.enc.Utf8);
+      decryptedString = Crypto.AES.decrypt(String(value), SecureConfig.seed).toString(Crypto.enc.Utf8);
     } catch (error) {
       return decryptedString;
     }
     return decryptedString;
   }
 
-  static get (key) {
-    const decrypt = encryptedVars.includes(key)
+  static get (key, decrypt = true) {
     return decrypt ? SecureConfig.decrypt(SecureConfig.configProvider[key]) : SecureConfig.configProvider[key];
   }
 } 
